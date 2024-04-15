@@ -34,3 +34,16 @@
 .striped ion-item {
   background-color: var(--background);
 }
+
+.full-width-button {
+  width: 100%;
+  height: min(35px, 10vw);
+}
+
+ion-item:nth-child(odd) {
+  background-color: #f2f2f2; /* Jasniejszy kolor */
+}
+
+ion-item:nth-child(even) {
+  background-color: #c2c2c2; /* Ciemniejszy kolor */
+}

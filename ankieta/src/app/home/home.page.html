@@ -23,7 +23,7 @@
         </ion-row>
         <ion-row>
           <ion-col  style="display: flex;justify-content: end;" >
-            <ion-button (click)="changeSlide(1)" shape="round" size="small" color="danger" style="width: 40px;height: 40px;">
+            <ion-button (click)="changeSlide(2,true)" shape="round" size="small" color="danger" style="width: 40px;height: 40px;">
               <ion-icon slot="icon-only" name="caret-forward-outline"></ion-icon>
             </ion-button>
           </ion-col>
@@ -72,28 +72,42 @@
                 <ion-label>grupa</ion-label>
                 <ion-label>{{surveyData.Grupa}}</ion-label>
               </ion-item>
-            
+
             </ion-list>
-            
+
           </ion-col>
         </ion-row>
         </ion-grid>
     </swiper-slide>
       <swiper-slide>
-        <ion-list>
-          <ion-item>
-              <ion-select multiple="false" label="1. Zajecia byly prowadzone w sposob jasny i zrozumialy">
-                <ion-select-option value="1">zdecydowanie nie</ion-select-option>
-                <ion-select-option value="2">nie</ion-select-option>
-                <ion-select-option value="3">ani tak ani nie</ion-select-option>
-                <ion-select-option value="4">tak</ion-select-option>
-                <ion-select-option value="5">zdecydowanie tak</ion-select-option>
-              </ion-select>
-          </ion-item>
+        <ion-list class="striped">
+          <ion-row>
+            <ion-col style="display: flex; align-items: center;">
+              <ion-button (click)="changeSlide(1, false)" shape="round" size="small" color="danger" style="width: 40px;height: 40px;">
+                <ion-icon slot="icon-only" name="caret-back-outline"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-item *ngFor="let question of questions; let i = index">
+  <ion-select (ionChange)="saveAnswer(i, $event.target.value)" multiple="false" [label]="question">
+    <ion-select-option value="1">zdecydowanie nie</ion-select-option>
+    <ion-select-option value="2">nie</ion-select-option>
+    <ion-select-option value="3">ani tak ani nie</ion-select-option>
+    <ion-select-option value="4">tak</ion-select-option>
+    <ion-select-option value="5">zdecydowanie tak</ion-select-option>
+  </ion-select>
+</ion-item>
+
+
         </ion-list>
+        <ion-item>
+          <ion-button class="full-width-button" color="primary" (click)="logAnswers()">
+            <ion-icon slot="start" name="mail"></ion-icon>
+            Wyslij
+          </ion-button>
+        </ion-item>
       </swiper-slide>
-      <swiper-slide>Slide 3</swiper-slide>
     </swiper-container>
   </div>
 </ion-content>
-  

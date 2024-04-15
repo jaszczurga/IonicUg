@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { register } from 'swiper/element/bundle';
-import { AlertController } from '@ionic/angular';
+import {AlertController, ToastController} from '@ionic/angular';
 
 
 register();
@@ -11,10 +11,29 @@ register();
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  ngOnInit() {
+    this.presentToast('Please fill out the survey carefully.');
+  }
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
+  }
 
-  constructor(private ac: AlertController){}
+  constructor(private toastController: ToastController, private ac: AlertController){}
 
-
+  //lista pytan
+  questions: string[] = [
+    "1. Na zajęciach była przekazywana wiedza zarówno teoretyczna, jak i praktyczna",
+    "2. Zajęcia miały precyzyjne określone założenia i cele.",
+    "3. Zajęcia były prowadzone w sposób jasny i zrozumiały",
+    "4. Forma zajęć, wykorzysywane ćwiczenia oraz przykłady, angażowały uczestników",
+    "5. Wykładowca dokonywał syntez i podsumowań partii materiału.",
+    "6. Wykładowca potrafił zinteresować słuchaczy omawianym tematem.",
+    "7. Zajęcia realizowane były w przyjaznej i budującej atmosferze.",
+  ];
 
   surveyCode:number=100000;
 
@@ -29,20 +48,55 @@ export class HomePage {
 
   }
 
-  async changeSlide(number:number): Promise<void>{
-    const swiperEl = document.querySelector('swiper-container');
-    //zamiana slajdu jesli warunki!
-    if(!this.surveyData.University){
-      const alert = await this.ac.create({
-        header:"dane ankiety",
-        message:"sprawdz czy wypelniasz odpowiednia ankiete",
-        buttons:['Ok']
-      })
-      await alert.present();
-    }else{
-      swiperEl?.swiper.slideNext();
-    }
-    
+  answersList: Answer[] = [];
+  async logAnswers(): Promise<void> {
+  if (this.answersList.length !== this.questions.length) {
+    const alert: HTMLIonAlertElement = await this.ac.create({
+      header: 'Incomplete Survey',
+      message: 'sprawdz czy wszystkie pytania są zaznaczone',
+      buttons: ['OK']
+    });
+    await alert.present();
+  } else {
+    console.log(this.answersList);
+    this.presentToast('Ankieta wyslana.');
+    const swiperEl: any = document.querySelector('swiper-container');
+    swiperEl?.swiper?.slidePrev()
+  }
+}
+
+
+
+async changeSlide(slideNumber: number, next: boolean): Promise<void> {
+  const swiperEl: any = document.querySelector('swiper-container');
+  const currentSlide = swiperEl?.swiper?.activeIndex;
+  if (currentSlide === 0 && !this.surveyData.University) {
+    const alert: HTMLIonAlertElement = await this.ac.create({
+      header: "dane ankiety",
+      message: "sprawdz czy wypelniasz odpowiednia ankiete",
+      buttons: ['Ok']
+    });
+    await alert.present();
+  } else if (currentSlide === 1 && this.answersList.length !== this.questions.length) {
+    const alert: HTMLIonAlertElement = await this.ac.create({
+      header: "dane ankiety",
+      message: "sprawdz czy wszystkie pytania są zaznaczone",
+      buttons: ['Ok']
+    });
+    await alert.present();
+  } else {
+    next ? swiperEl?.swiper?.slideNext() : swiperEl?.swiper?.slidePrev();
+  }
+}
+
+  saveAnswer(index: number, answer: number) {
+    const question = this.questions[index];
+    const newAnswer: Answer = {
+      questionNumber: index,
+      question: question,
+      answer: answer
+    };
+    this.answersList[index] = newAnswer;
   }
 
   getSurveyData(){
@@ -53,7 +107,7 @@ export class HomePage {
       University: "UG",
       Major:"AiB",
       Semestr:"3",
-      Prowadzacy:"Mr Kuciapski",
+      Prowadzacy:"Mr Gajewski",
       Przedmiot:"Ionic",
       Rodzaj:"dzienne",
       Grupa:"s22-31"
@@ -71,4 +125,10 @@ interface SurveyData{
   Przedmiot:string,
   Rodzaj:string,
   Grupa:string
+}
+
+interface Answer{
+  questionNumber: number;
+  question: string;
+  answer: number;
 }
