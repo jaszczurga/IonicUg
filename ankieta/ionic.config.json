@@ -1,0 +1,7 @@
+{
+  "name": "ankieta",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
